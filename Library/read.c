@@ -48,7 +48,7 @@ double BuildNumber(char const * string, int begin, int integer, int fract) {
     i++;
   }
 
-  //Прибавляем дробную часть числа
+  //РџСЂРёР±Р°РІР»СЏРµРј РґСЂРѕР±РЅСѓСЋ С‡Р°СЃС‚СЊ С‡РёСЃР»Р°
   i = 1;
   j++;
   while (i <= fract) {
@@ -61,15 +61,22 @@ double BuildNumber(char const * string, int begin, int integer, int fract) {
 }
 double ReadNumber(char const * string, int *count) {
   int i = *count;
+  int remember = i;
+  double result;
   int integer = 0, fract = 0;
-  for (i, integer = 0; isdigit(string[i]); i++, integer++); //смотрим, сколько символов соответствует целой части
+  if (string[i] == '-')
+	++i;
+  for (i, integer = 0; isdigit(string[i]); i++, integer++); //СЃРјРѕС‚СЂРёРј, СЃРєРѕР»СЊРєРѕ СЃРёРјРІРѕР»РѕРІ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ С†РµР»РѕР№ С‡Р°СЃС‚Рё
   if (string[i] == '.') {
     i++;
-    for (i, fract = 0; isdigit(string[i]); i++, fract++); //считаем, сколько чисел соответствует дробной части
+    for (i, fract = 0; isdigit(string[i]); i++, fract++); //СЃС‡РёС‚Р°РµРј, СЃРєРѕР»СЊРєРѕ С‡РёСЃРµР» СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ РґСЂРѕР±РЅРѕР№ С‡Р°СЃС‚Рё
       //return TYRE_ERRORS_REAL_RECORD;
   }
   *count = i;
-  return BuildNumber(string, i - integer - fract, integer, fract);
+  result = BuildNumber(string, i - integer - fract, integer, fract);
+  if (string[remember] == '-')
+	  result *= -1;
+  return result;
 }
 void ArrToMatrix (double * arr, matrix_t result, int size) {
   int i, j, k = 0;
@@ -80,14 +87,14 @@ void ArrToMatrix (double * arr, matrix_t result, int size) {
     }
   }
 }
-//функция добавляет 0 в недостающие места и сдвигает массив.
+//С„СѓРЅРєС†РёСЏ РґРѕР±Р°РІР»СЏРµС‚ 0 РІ РЅРµРґРѕСЃС‚Р°СЋС‰РёРµ РјРµСЃС‚Р° Рё СЃРґРІРёРіР°РµС‚ РјР°СЃСЃРёРІ.
 void Shift(double* arr,int k, int wigth, int count) {
   int size = count - wigth;
   int i, l, g;
   int start, start1;
-  int heigth = (k - count) / wigth; //количество строк, в которые нужно добавить нули
+  int heigth = (k - count) / wigth; //РєРѕР»РёС‡РµСЃС‚РІРѕ СЃС‚СЂРѕРє, РІ РєРѕС‚РѕСЂС‹Рµ РЅСѓР¶РЅРѕ РґРѕР±Р°РІРёС‚СЊ РЅСѓР»Рё
   for (i = 0; i < size; i++) {
-    start1 = wigth + i;             //откуда начинаем проставлять 0, размерность, которую постоянно прибавляем к текущему "началу"
+    start1 = wigth + i;             //РѕС‚РєСѓРґР° РЅР°С‡РёРЅР°РµРј РїСЂРѕСЃС‚Р°РІР»СЏС‚СЊ 0, СЂР°Р·РјРµСЂРЅРѕСЃС‚СЊ, РєРѕС‚РѕСЂСѓСЋ РїРѕСЃС‚РѕСЏРЅРЅРѕ РїСЂРёР±Р°РІР»СЏРµРј Рє С‚РµРєСѓС‰РµРјСѓ "РЅР°С‡Р°Р»Сѓ"
     start = start1;
     for (g = 0; g < heigth; g++) {
       k++;
@@ -105,25 +112,25 @@ matrix_t MatrixParse(char* string) {
   double * arr, * m;
   arr = (double*)malloc (lenght * sizeof (double));
   assert(string != NULL);
-  for (i = 0; isspace(string[i]); i++); //пропускаем пробелы
+  for (i = 0; isspace(string[i]); i++); //РїСЂРѕРїСѓСЃРєР°РµРј РїСЂРѕР±РµР»С‹
   if (string[i++] != '{') {
     free(arr);
     //ERROR_INVALID_EXPRESSION
     return result;
   }
   for (i; i < lenght; i++) {
-    for (i; isspace(string[i]); i++); //пропускаем пробелы
+    for (i; isspace(string[i]); i++); //РїСЂРѕРїСѓСЃРєР°РµРј РїСЂРѕР±РµР»С‹
     if (string[i++] != '{') {
       free(arr);
       //ERROR_INVALID_EXPRESSION
       return result;
     }
-    for (i; isspace(string[i]); i++); //пропускаем пробелы
+    for (i; isspace(string[i]); i++); //РїСЂРѕРїСѓСЃРєР°РµРј РїСЂРѕР±РµР»С‹
     count = 0;
     while (string[i] != '}') {
-      for (i; isspace(string[i]); i++); //пропускаем пробелы
+      for (i; isspace(string[i]); i++); //РїСЂРѕРїСѓСЃРєР°РµРј РїСЂРѕР±РµР»С‹
       arr[k++] = ReadNumber(string, &i);
-      for (i; isspace(string[i]); i++); //пропускаем пробелы
+      for (i; isspace(string[i]); i++); //РїСЂРѕРїСѓСЃРєР°РµРј РїСЂРѕР±РµР»С‹
       if (string[i] == ',')
         i++;
       else if (string[i] != '}') {
@@ -147,22 +154,22 @@ matrix_t MatrixParse(char* string) {
         //ERROR_NOT_ENAUGH_MEMORY
         return result;
       }
-      Shift(arr, k, wigth, count); //все предыдущие строки приводит к размеру count добавлением нулей
+      Shift(arr, k, wigth, count); //РІСЃРµ РїСЂРµРґС‹РґСѓС‰РёРµ СЃС‚СЂРѕРєРё РїСЂРёРІРѕРґРёС‚ Рє СЂР°Р·РјРµСЂСѓ count РґРѕР±Р°РІР»РµРЅРёРµРј РЅСѓР»РµР№
       k += (count - wigth)*height;
       wigth = count;
     }
-    else if (wigth > count) {   //нынешнюю строку приводим к общему размеру, добивая нулями
+    else if (wigth > count) {   //РЅС‹РЅРµС€РЅСЋСЋ СЃС‚СЂРѕРєСѓ РїСЂРёРІРѕРґРёРј Рє РѕР±С‰РµРјСѓ СЂР°Р·РјРµСЂСѓ, РґРѕР±РёРІР°СЏ РЅСѓР»СЏРјРё
       for (k, count; wigth != count; k++, count++)
         arr[k] = 0;
     }
     height++;
-    for (i; isspace(string[i]); i++); //пропускаем пробелы
+    for (i; isspace(string[i]); i++); //РїСЂРѕРїСѓСЃРєР°РµРј РїСЂРѕР±РµР»С‹
     if (string[i++] != '}') {
       free(arr);
       //ERROR_INVALID_EXPRESSION
       return result;
     }
-    for (i; isspace(string[i]); i++); //пропускаем пробелы
+    for (i; isspace(string[i]); i++); //РїСЂРѕРїСѓСЃРєР°РµРј РїСЂРѕР±РµР»С‹
     if (string[i] == '}')
       break;
     if (string[i] != ',') {
